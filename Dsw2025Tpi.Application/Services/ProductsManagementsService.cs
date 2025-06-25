@@ -40,11 +40,9 @@ public class ProductsManagementsService
         return await _repository.First<Product>(p => p.Sku == sku);
     }
 
-    public async Task<ProductModel.Response> AddProduct(ProductModel.RequestWithDescription request)
+    public async Task<ProductModel.ResponseWithDescription> AddProduct(ProductModel.RequestWithDescription request)
     {
-        if (string.IsNullOrWhiteSpace(request.Sku) ||
-            string.IsNullOrWhiteSpace(request.Name) ||
-            request.Price < 0)
+        if (!IsValid(request))
         {
             throw new ArgumentException("Valores para el producto no válidos");
         }
@@ -61,6 +59,30 @@ public class ProductsManagementsService
             (int)request.Stock
         );
         await _repository.Add(product);
-        return new ProductModel.Response(product.Id);
+        return new ProductModel.ResponseWithDescription(product.Id,product.Sku,product.InternalCode,product.Name,product.Description,product.CurrentUnitPrice,product.StockQuantity,product.isActive);
+    }
+
+    public async Task<Product> ModifyProduct(Product product, ProductModel.RequestWithDescription request)
+    {
+        if (!IsValid(request))
+        {
+            throw new ArgumentException("Valores para el producto no válidos");
+        }
+        var exist = await _repository.First<Product>(p => p.Sku == request.Sku && p.Id != product.Id);
+        if (exist != null) throw new DuplicatedEntityException($"Ya existe un producto con el Sku {request.Sku}");
+        product.Sku = request.Sku;
+        product.InternalCode = request.InternalCode;
+        product.Name = request.Name;
+        product.Description = request.Description;
+        product.CurrentUnitPrice = request.Price;
+        product.StockQuantity = (int)request.Stock;
+        return await _repository.Update(product);
+    }
+
+    private bool IsValid(ProductModel.RequestWithDescription request)
+    {
+        return string.IsNullOrWhiteSpace(request.Sku) ||
+            string.IsNullOrWhiteSpace(request.Name) ||
+            request.Price < 0 || request.Stock <= 0;
     }
 }

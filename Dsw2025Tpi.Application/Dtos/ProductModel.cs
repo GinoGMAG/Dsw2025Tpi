@@ -12,4 +12,5 @@ public record ProductModel
     public record RequestWithDescription(string Sku,string InternalCode, string Name, string Description, decimal Price,decimal Stock);
 
     public record Response(Guid Id);
+    public record class ResponseWithDescription(Guid Id, string Sku, string InternalCode, string Name, string Description, decimal Price, decimal Stock,bool IsActive);
 }
