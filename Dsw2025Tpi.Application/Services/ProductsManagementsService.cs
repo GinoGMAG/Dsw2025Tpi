@@ -1,12 +1,13 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
+using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Domain.Domain;
 using Dsw2025Tpi.Domain.Interfaces;
 
 
 namespace Dsw2025Tpi.Application.Services;
 
-public class ProductsManagementsService
+public class ProductsManagementsService : IProductsManagementsService
 {
     private readonly IRepository _repository;
 
@@ -22,7 +23,7 @@ public class ProductsManagementsService
 
     public async Task<IEnumerable<Product>?> GetAllProducts()
     {
-        return await _repository.GetAll<Product>();
+        return await _repository.GetFiltered<Product>(p => p.IsActive);
     }
 
     public async Task<Product> UpdateProduct(Product product)
@@ -59,7 +60,7 @@ public class ProductsManagementsService
             (int)request.Stock
         );
         await _repository.Add(product);
-        return new ProductModel.ResponseWithDescription(product.Id,product.Sku,product.InternalCode,product.Name,product.Description,product.CurrentUnitPrice,product.StockQuantity,product.isActive);
+        return new ProductModel.ResponseWithDescription(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity, product.IsActive);
     }
 
     public async Task<Product> ModifyProduct(Product product, ProductModel.RequestWithDescription request)
@@ -76,13 +77,21 @@ public class ProductsManagementsService
         product.Description = request.Description;
         product.CurrentUnitPrice = request.Price;
         product.StockQuantity = (int)request.Stock;
-        return await _repository.Update(product);
+        return await UpdateProduct(product);
+    }
+
+    public async Task PatchProductIsActive(Product product)
+    {
+        product.SetIsActive();   
+        await UpdateProduct(product);
     }
 
     private bool IsValid(ProductModel.RequestWithDescription request)
     {
         return string.IsNullOrWhiteSpace(request.Sku) ||
             string.IsNullOrWhiteSpace(request.Name) ||
-            request.Price < 0 || request.Stock <= 0;
+            request.Price > 0 || request.Stock >= 1;
     }
+
+
 }

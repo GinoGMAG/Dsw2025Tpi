@@ -1,3 +1,4 @@
+using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Application.Services;
 using Dsw2025Tpi.Data;
 using Dsw2025Tpi.Data.Repositories;
@@ -11,6 +12,8 @@ public class Program
 {
     public static void Main(string[] args)
     {
+
+        string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DSW2025TPI;Integrated Security=True"; // Change this to your actual connection string
         var builder = WebApplication.CreateBuilder(args);
 
         // Add services to the container.
@@ -21,8 +24,8 @@ public class Program
         builder.Services.AddSwaggerGen();
         builder.Services.AddHealthChecks();
         builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
-    options.UseSqlServer("Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DSW2025TPI;Integrated Security=True"));
-        builder.Services.AddTransient<ProductsManagementsService>();
+    options.UseSqlServer(ConnectionString));
+        builder.Services.AddTransient<IProductsManagementsService, ProductsManagementsService>();
         builder.Services.AddScoped<IRepository, EfRepository>();
 
         var app = builder.Build();

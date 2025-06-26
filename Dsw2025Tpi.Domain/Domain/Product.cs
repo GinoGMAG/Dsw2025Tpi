@@ -1,9 +1,5 @@
 ﻿using Dsw2025Tpi.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 
 namespace Dsw2025Tpi.Domain.Domain
 {
@@ -16,10 +12,8 @@ namespace Dsw2025Tpi.Domain.Domain
         public decimal CurrentUnitPrice { get; set; }
         public int StockQuantity { get; set; }
 
-        public Boolean isActive
-        {
-            get { return StockQuantity > 0; }
-        }
+        public Boolean IsActive { get; private set; } = true;
+
 
         public Product(string sku, string internalCode, string description, string name, decimal currentUnitPrice, int stockQuantity)
         {
@@ -30,5 +24,8 @@ namespace Dsw2025Tpi.Domain.Domain
             CurrentUnitPrice = currentUnitPrice;
             StockQuantity = stockQuantity;
         }
+
+        public void SetIsActive() => IsActive = !IsActive;
+    
     }
 }

@@ -1,17 +1,18 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
-using Dsw2025Tpi.Application.Services;
+using Dsw2025Tpi.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Extensions.FileProviders;
 
 namespace Dsw2025Tpi.Api.Controllers;
 
-[Route("api/[controller]")]
+[Route("api/products")] // not use a [Controler]
 [ApiController]
 public class ProductController : ControllerBase
 {
-    private readonly ProductsManagementsService _service;
+    private readonly IProductsManagementsService _service;
 
-    public ProductController(ProductsManagementsService service)
+    public ProductController(IProductsManagementsService service)
     {
         _service = service;
     }
@@ -97,11 +98,30 @@ public class ProductController : ControllerBase
                 return NotFound();
             }
             var updatedProduct = await _service.ModifyProduct(product, request);
-            return Ok(updatedProduct);
+            return NoContent();
         }
         catch (Exception)
         {
             return Problem("An error occurred while updating the product");
+        }
+    }
+
+    [HttpPatch("{id}")]
+    public async Task<IActionResult> PatchProductIsActive(Guid id)
+    {
+        try
+        {
+            var product = await _service.GetProductById(id);
+            if (product == null)
+            {
+                return NotFound();
+            }
+            await _service.PatchProductIsActive(product);
+            return NoContent();
+        }
+        catch (Exception)
+        {
+            return Problem("An error occurred while patching the product");
         }
     }
 }
