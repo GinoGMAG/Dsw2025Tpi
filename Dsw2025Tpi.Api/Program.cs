@@ -12,7 +12,7 @@ public class Program
 {
     public static void Main(string[] args)
     {
-
+        // Data Source=(localdb)\MSSQLLocalDB;Initial Catalog=DSW2025TPI;Integrated Security=True
         string ConnectionString = "Data Source=(localdb)\\MSSQLLocalDB;Initial Catalog=DSW2025TPI;Integrated Security=True"; // Change this to your actual connection string
         var builder = WebApplication.CreateBuilder(args);
 
@@ -26,6 +26,7 @@ public class Program
         builder.Services.AddDbContext<Dsw2025TpiContext>(options =>
     options.UseSqlServer(ConnectionString));
         builder.Services.AddTransient<IProductsManagementsService, ProductsManagementsService>();
+        builder.Services.AddTransient<IOrderManagementsService, OrderManagementsService>();
         builder.Services.AddScoped<IRepository, EfRepository>();
 
         var app = builder.Build();

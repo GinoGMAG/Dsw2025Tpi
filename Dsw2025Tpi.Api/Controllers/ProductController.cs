@@ -1,6 +1,7 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Interfaces;
+using Dsw2025Tpi.Domain.Domain;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.FileProviders;
 
@@ -19,12 +20,12 @@ public class ProductController : ControllerBase
 
     //Crete a new product
     [HttpPost]
-    public async Task<IActionResult> AddProduct([FromBody] ProductModel.RequestWithDescription request)
+    public async Task<IActionResult> AddProduct([FromBody] ProductModel.ProductRequestWithDescription request)
     {
         try
         {
             var product = await _service.AddProduct(request);
-            return CreatedAtAction(nameof(GetProductById), new { id = product.Id}, product);
+            return CreatedAtAction(nameof(GetProductById), new { id = product.Id }, product);
         }
         catch (ArgumentException ae)
         {
@@ -88,7 +89,7 @@ public class ProductController : ControllerBase
 
     // PUT to update a product
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.RequestWithDescription request)
+    public async Task<IActionResult> UpdateProduct(Guid id, [FromBody] ProductModel.ProductRequestWithDescription request)
     {
         try
         {

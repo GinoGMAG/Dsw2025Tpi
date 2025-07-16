@@ -41,7 +41,7 @@ public class ProductsManagementsService : IProductsManagementsService
         return await _repository.First<Product>(p => p.Sku == sku);
     }
 
-    public async Task<ProductModel.ResponseWithDescription> AddProduct(ProductModel.RequestWithDescription request)
+    public async Task<ProductModel.ProductResponseWithDescription> AddProduct(ProductModel.ProductRequestWithDescription request)
     {
         if (!IsValid(request))
         {
@@ -60,10 +60,10 @@ public class ProductsManagementsService : IProductsManagementsService
             (int)request.Stock
         );
         await _repository.Add(product);
-        return new ProductModel.ResponseWithDescription(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity, product.IsActive);
+        return new ProductModel.ProductResponseWithDescription(product.Id, product.Sku, product.InternalCode, product.Name, product.Description, product.CurrentUnitPrice, product.StockQuantity, product.IsActive);
     }
 
-    public async Task<Product> ModifyProduct(Product product, ProductModel.RequestWithDescription request)
+    public async Task<Product> ModifyProduct(Product product, ProductModel.ProductRequestWithDescription request)
     {
         if (!IsValid(request))
         {
@@ -86,7 +86,7 @@ public class ProductsManagementsService : IProductsManagementsService
         await UpdateProduct(product);
     }
 
-    private bool IsValid(ProductModel.RequestWithDescription request)
+    private bool IsValid(ProductModel.ProductRequestWithDescription request)
     {
         return string.IsNullOrWhiteSpace(request.Sku) ||
             string.IsNullOrWhiteSpace(request.Name) ||
