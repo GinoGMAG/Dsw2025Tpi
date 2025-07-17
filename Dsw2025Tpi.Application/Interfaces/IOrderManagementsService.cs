@@ -8,6 +8,6 @@ namespace Dsw2025Tpi.Application.Interfaces
         Task<OrderModel.OrderResponse> AddOrder(OrderModel.OrderRequest request);
         Task<Order?> GetOrderById(Guid id);
         Task<OrderModel.OrderResponse> UpdateOrderStatus(Guid id, OrderModel.OrderStatusUpdateRequest request);
-        Task<List<Order>> GetAllOrdersFilter(OrderModel.OrderFilterRequest request);
+        Task<List<OrderModel.OrderResponse>> GetAllOrdersFilter(OrderModel.OrderFilterRequest request);
     }
 }

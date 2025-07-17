@@ -3,6 +3,7 @@ using Dsw2025Tpi.Application.Exceptions;
 using Dsw2025Tpi.Application.Interfaces;
 using Dsw2025Tpi.Domain.Domain;
 using Dsw2025Tpi.Domain.Interfaces;
+using System.Linq;
 using System.Linq.Expressions;
 
 namespace Dsw2025Tpi.Application.Services;
@@ -27,7 +28,24 @@ public class OrderManagementsService : IOrderManagementsService
         var order = await CreateOrderAsync(request);
         await _repository.Add(order);
 
-        return new OrderModel.OrderResponse(request.customerId, order.Id, order.date, order.shippingAddress, order.billingAddress, order.notes, order.totalAmount, order.orderItems, order.OrderStatus);
+        var orderItemResponses = order.orderItems.Select(oi => new OrderItemsModel.OrderItemResponse(
+            oi.ProductID,
+            oi.Product.Name,
+            oi.quantity,
+            oi.unitPrice
+        )).ToList();
+
+        return new OrderModel.OrderResponse(
+            order.customerId,
+            order.Id,
+            order.date,
+            order.shippingAddress,
+            order.billingAddress,
+            order.notes,
+            order.totalAmount,
+            orderItemResponses,
+            order.OrderStatus
+        );
     }
 
     private bool IsValid(OrderModel.OrderRequest request)
@@ -64,15 +82,54 @@ public class OrderManagementsService : IOrderManagementsService
         else if (!Enum.IsDefined(typeof(OrderStatus),request.OrderStatus)) throw new NotEstateExistException($"El estado de la orden {request.OrderStatus} no es válido");
         order.OrderStatus = request.OrderStatus;
         await _repository.Update(order);
-        return new OrderModel.OrderResponse(order.customerId, order.Id, order.date, order.shippingAddress, order.billingAddress, order.notes, order.totalAmount, order.orderItems, order.OrderStatus);
+
+        var orderItemResponses = order.orderItems.Select(oi => new OrderItemsModel.OrderItemResponse(
+            oi.ProductID,
+            oi.Product.Name,
+            oi.quantity,
+            oi.unitPrice
+        )).ToList();
+
+        return new OrderModel.OrderResponse(
+            order.customerId,
+            order.Id,
+            order.date,
+            order.shippingAddress,
+            order.billingAddress,
+            order.notes,
+            order.totalAmount,
+            orderItemResponses,
+            order.OrderStatus
+        );
     }
 
-    public async Task<List<Order>> GetAllOrdersFilter(OrderModel.OrderFilterRequest request)
+    public async Task<List<OrderModel.OrderResponse>> GetAllOrdersFilter(OrderModel.OrderFilterRequest request)
     {
         Expression<Func<Order, bool>> predicate = o => (!request.OrderStatus.HasValue || o.OrderStatus == request.OrderStatus.Value) &&
         (!request.CustomerId.HasValue || o.customerId == request.CustomerId.Value);
 
-        var orders = await _repository.GetFiltered<Order>(predicate);
-        return orders.ToList();
+        var orders = await _repository.GetFiltered<Order>(predicate, "orderItems");
+
+        if (orders == null || !orders.Any())
+        {
+            return new List<OrderModel.OrderResponse>();
+        }
+
+        return orders.Select(order => new OrderModel.OrderResponse(
+            order.customerId,
+            order.Id,
+            order.date,
+            order.shippingAddress,
+            order.billingAddress,
+            order.notes,
+            order.totalAmount,
+            order.orderItems.Select(oi => new OrderItemsModel.OrderItemResponse(
+                oi.ProductID,
+                oi.Product?.Name ?? string.Empty,
+                oi.quantity,
+                oi.unitPrice
+            )).ToList(),
+            order.OrderStatus
+        )).ToList();
     }
 }

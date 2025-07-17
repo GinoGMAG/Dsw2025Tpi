@@ -8,6 +8,7 @@ public class Dsw2025TpiContext : DbContext
     {
     }
 
+
     public DbSet<Customer> Customers { get; set; }
 
     public DbSet<Product> Products { get; set; }
@@ -15,5 +16,84 @@ public class Dsw2025TpiContext : DbContext
     public DbSet<Order> Orders { get; set; }
 
     public DbSet<OrderItem> OrderItems { get; set; }
+
+    protected override void OnModelCreating(ModelBuilder modelBuilder)
+    {
+        base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Product>(p =>
+        {
+            p.ToTable("Products")
+            .Property(p => p.Sku)
+            .IsRequired()
+            .HasMaxLength(20)
+            .IsUnicode();
+            p.Property(p => p.Id)
+            .IsRequired();
+            p.Property(p => p.Name)
+            .IsRequired();
+        });
+
+        modelBuilder.Entity<Order>(o =>
+        {
+            o.ToTable("Orders")
+            .Property(o => o.customerId)
+            .IsRequired();
+            o.HasKey(o => o.Id);
+            o.HasOne(o => o.Customer)
+            .WithMany(c => c.orders)
+            .HasForeignKey(o => o.customerId)
+            .OnDelete(DeleteBehavior.Cascade);
+            o.Property(o => o.shippingAddress)
+            .IsRequired()
+            .HasMaxLength(200);
+            o.Property(o => o.billingAddress)
+            .IsRequired()
+            .HasMaxLength(200);
+            o.Property(o => o.totalAmount)
+            .IsRequired();
+        });
+
+        modelBuilder.Entity<OrderItem>(oi =>
+        {
+            oi.ToTable("OrderItems")
+            .Property(oi => oi.ProductID)
+            .IsRequired();
+            oi.HasKey(oi => oi.Id);
+            oi.HasOne(oi => oi.Product)
+            .WithMany(p => p.OrderItems)
+            .HasForeignKey(oi => oi.ProductID)
+            .OnDelete(DeleteBehavior.Cascade);
+            oi.HasOne(oi => oi.Order)
+            .WithMany(o => o.orderItems)
+            .HasForeignKey(oi => oi.OrderID)
+            .OnDelete(DeleteBehavior.Cascade);
+            oi.Property(oi => oi.quantity)
+            .IsRequired();
+            oi.Property(oi => oi.unitPrice)
+            .IsRequired();
+            
+
+        });
+
+        modelBuilder.Entity<Customer>(c =>
+        {
+            c.ToTable("Customers")
+            .Property(c => c.name)
+            .IsRequired()
+            .HasMaxLength(100);
+            c.Property(c => c.Id)
+            .IsRequired();
+            c.Property(c => c.email)
+            .IsRequired()
+            .HasMaxLength(100)
+            .IsUnicode(false);
+            c.Property(c => c.phoneNumber)
+            .HasMaxLength(15)
+            .IsUnicode(false);
+        });
+
+
+    }
 
 }

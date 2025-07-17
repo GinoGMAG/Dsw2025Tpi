@@ -11,9 +11,9 @@ namespace Dsw2025Tpi.Domain.Domain
         public string Name { get; set; }
         public decimal CurrentUnitPrice { get; set; }
         public int StockQuantity { get; set; }
-
         public Boolean IsActive { get; private set; } = true;
 
+        public List<OrderItem> OrderItems { get; set; }
 
         public Product(string sku, string internalCode, string description, string name, decimal currentUnitPrice, int stockQuantity)
         {

@@ -12,5 +12,5 @@ public record OrderModel
     public record OrderStatusUpdateRequest(OrderStatus OrderStatus);
     public record OrderRequest(Guid customerId, string shippingAddress, string billingAddress, List<ProductModel.ProductRequest> Products);
     public record OrderFilterRequest(OrderStatus? OrderStatus,Guid? CustomerId, int? pageNumber, int? pagesize);
-    public record OrderResponse(Guid customerId,Guid OrderId, DateTime date, string shippingAddress, string billingAddress,string notes,decimal totalmount,List<OrderItem> OrderItems,OrderStatus OrderStatus);
+    public record OrderResponse(Guid customerId,Guid OrderId, DateTime date, string shippingAddress, string billingAddress,string notes,decimal totalmount,List<OrderItemsModel.OrderItemResponse> OrderItems,OrderStatus OrderStatus);
 }

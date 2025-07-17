@@ -1,10 +1,4 @@
 ﻿using Dsw2025Tpi.Domain.Entities;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
 
 namespace Dsw2025Tpi.Domain.Domain
 {
@@ -18,6 +12,9 @@ namespace Dsw2025Tpi.Domain.Domain
         public decimal totalAmount { get; set; }
         public List<OrderItem> orderItems { get; set; } = new List<OrderItem>();
         public OrderStatus OrderStatus { get; set; } = OrderStatus.PENDING;
+
+        // Navigation properties
+        public Customer Customer { get; set; }
 
         public Order(Guid customerId, string shippingAddress, string billingAddress)
         {

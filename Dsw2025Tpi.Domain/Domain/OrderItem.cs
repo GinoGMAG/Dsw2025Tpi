@@ -19,6 +19,10 @@ namespace Dsw2025Tpi.Domain.Domain
             get { return quantity * unitPrice; }
         }
 
+        // Navigation properties 
+        public Order Order { get; set; }    
+        public Product Product { get; set; }
+
         public OrderItem() 
         {
 
