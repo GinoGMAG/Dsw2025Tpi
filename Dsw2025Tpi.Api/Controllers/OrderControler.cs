@@ -1,11 +1,13 @@
 ﻿using Dsw2025Tpi.Application.Dtos;
 using Dsw2025Tpi.Application.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore.Query.Internal;
 
 namespace Dsw2025Tpi.Api.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("api/orders")]
 public class OrderControler : ControllerBase
 {

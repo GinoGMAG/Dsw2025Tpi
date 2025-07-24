@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Dsw2025Tpi.Data.Migrations
 {
     [DbContext(typeof(Dsw2025TpiContext))]
-    [Migration("20250717171608_FirstPatchDataBaseEntitysConfiguration")]
-    partial class FirstPatchDataBaseEntitysConfiguration
+    [Migration("20250724183610_InitialDomain")]
+    partial class InitialDomain
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
