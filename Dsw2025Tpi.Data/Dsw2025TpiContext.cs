@@ -36,20 +36,20 @@ public class Dsw2025TpiContext : DbContext
         modelBuilder.Entity<Order>(o =>
         {
             o.ToTable("Orders")
-            .Property(o => o.customerId)
+            .Property(o => o.CustomerId)
             .IsRequired();
             o.HasKey(o => o.Id);
             o.HasOne(o => o.Customer)
-            .WithMany(c => c.orders)
-            .HasForeignKey(o => o.customerId)
+            .WithMany(c => c.Orders)
+            .HasForeignKey(o => o.CustomerId)
             .OnDelete(DeleteBehavior.Cascade);
-            o.Property(o => o.shippingAddress)
+            o.Property(o => o.ShippingAddress)
             .IsRequired()
             .HasMaxLength(200);
-            o.Property(o => o.billingAddress)
+            o.Property(o => o.BillingAddress)
             .IsRequired()
             .HasMaxLength(200);
-            o.Property(o => o.totalAmount)
+            o.Property(o => o.TotalAmount)
             .IsRequired();
         });
 
@@ -64,12 +64,12 @@ public class Dsw2025TpiContext : DbContext
             .HasForeignKey(oi => oi.ProductID)
             .OnDelete(DeleteBehavior.Cascade);
             oi.HasOne(oi => oi.Order)
-            .WithMany(o => o.orderItems)
+            .WithMany(o => o.OrderItems)
             .HasForeignKey(oi => oi.OrderID)
             .OnDelete(DeleteBehavior.Cascade);
-            oi.Property(oi => oi.quantity)
+            oi.Property(oi => oi.Quantity)
             .IsRequired();
-            oi.Property(oi => oi.unitPrice)
+            oi.Property(oi => oi.UnitPrice)
             .IsRequired();
             
 
@@ -78,16 +78,16 @@ public class Dsw2025TpiContext : DbContext
         modelBuilder.Entity<Customer>(c =>
         {
             c.ToTable("Customers")
-            .Property(c => c.name)
+            .Property(c => c.Name)
             .IsRequired()
             .HasMaxLength(100);
             c.Property(c => c.Id)
             .IsRequired();
-            c.Property(c => c.email)
+            c.Property(c => c.Email)
             .IsRequired()
             .HasMaxLength(100)
             .IsUnicode(false);
-            c.Property(c => c.phoneNumber)
+            c.Property(c => c.PhoneNumber)
             .HasMaxLength(15)
             .IsUnicode(false);
         });

@@ -11,13 +11,13 @@ public class Customer : EntityBase
 {
     public Customer(string email, string name, string phoneNumber)
     {
-        this.email = email;
-        this.name = name;
-        this.phoneNumber = phoneNumber;
+        this.Email = email;
+        this.Name = name;
+        this.PhoneNumber = phoneNumber;
     }
 
-    public string email { get; set; }
-    public string name { get; set; }
-    public string phoneNumber { get; set; }
-    public List<Order> orders { get; set; } = new List<Order>();
+    public string Email { get; set; }
+    public string Name { get; set; }
+    public string PhoneNumber { get; set; }
+    public List<Order> Orders { get; set; } = new List<Order>();
 }

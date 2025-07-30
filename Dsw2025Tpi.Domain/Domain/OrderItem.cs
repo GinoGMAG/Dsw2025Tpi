@@ -12,11 +12,11 @@ namespace Dsw2025Tpi.Domain.Domain
 
         public Guid ProductID { get; init; }
         public Guid OrderID { get; init; }
-        public int quantity { get; set; }
-        public decimal unitPrice { get; set; }
-        public decimal subtotal
+        public int Quantity { get; set; }
+        public decimal UnitPrice { get; set; }
+        public decimal Subtotal
         {
-            get { return quantity * unitPrice; }
+            get { return Quantity * UnitPrice; }
         }
 
         // Navigation properties 
@@ -31,8 +31,8 @@ namespace Dsw2025Tpi.Domain.Domain
         {
             this.ProductID = productId;
             this.OrderID = orderId;
-            this.quantity = quantity;
-            this.unitPrice = currentunitPrice;
+            this.Quantity = quantity;
+            this.UnitPrice = currentunitPrice;
         }
 
     }

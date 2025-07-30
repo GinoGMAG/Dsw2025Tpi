@@ -28,21 +28,21 @@ public class OrderManagementsService : IOrderManagementsService
         var order = await CreateOrderAsync(request);
         await _repository.Add(order);
 
-        var orderItemResponses = order.orderItems.Select(oi => new OrderItemsModel.OrderItemResponse(
+        var orderItemResponses = order.OrderItems.Select(oi => new OrderItemsModel.OrderItemResponse(
             oi.ProductID,
             oi.Product.Name,
-            oi.quantity,
-            oi.unitPrice
+            oi.Quantity,
+            oi.UnitPrice
         )).ToList();
 
         return new OrderModel.OrderResponse(
-            order.customerId,
+            order.CustomerId,
             order.Id,
-            order.date,
-            order.shippingAddress,
-            order.billingAddress,
-            order.notes,
-            order.totalAmount,
+            order.Date,
+            order.ShippingAddress,
+            order.BillingAddress,
+            order.Notes,
+            order.TotalAmount,
             orderItemResponses,
             order.OrderStatus
         );
@@ -62,8 +62,8 @@ public class OrderManagementsService : IOrderManagementsService
             if (productespecific == null) throw new NotExistException($"No existe el Producto con nombre {product.name}");
             else if (productespecific.StockQuantity < product.quantity) throw new StockInsufficientException($"Stock insuficiente del Producto: {productespecific.Name}");
             OrderItem orderItem = new OrderItem(productespecific.Id, order.Id, product.quantity, productespecific.CurrentUnitPrice);
-            order.orderItems.Add(orderItem);
-            order.totalAmount += productespecific.CurrentUnitPrice * product.quantity;
+            order.OrderItems.Add(orderItem);
+            order.TotalAmount += productespecific.CurrentUnitPrice * product.quantity;
             productespecific.StockQuantity -= product.quantity;
             await _repository.Update(productespecific);
         }
@@ -82,22 +82,21 @@ public class OrderManagementsService : IOrderManagementsService
         else if (!Enum.IsDefined(typeof(OrderStatus),request.OrderStatus)) throw new NotEstateExistException($"El estado de la orden {request.OrderStatus} no es válido");
         order.OrderStatus = request.OrderStatus;
         await _repository.Update(order);
-
-        var orderItemResponses = order.orderItems.Select(oi => new OrderItemsModel.OrderItemResponse(
+        var orderItemResponses = order.OrderItems.Select(oi => new OrderItemsModel.OrderItemResponse(
             oi.ProductID,
             oi.Product.Name,
-            oi.quantity,
-            oi.unitPrice
+            oi.Quantity,
+            oi.UnitPrice
         )).ToList();
 
         return new OrderModel.OrderResponse(
-            order.customerId,
+            order.CustomerId,
             order.Id,
-            order.date,
-            order.shippingAddress,
-            order.billingAddress,
-            order.notes,
-            order.totalAmount,
+            order.Date,
+            order.ShippingAddress,
+            order.BillingAddress,
+            order.Notes,
+            order.TotalAmount,
             orderItemResponses,
             order.OrderStatus
         );
@@ -106,7 +105,7 @@ public class OrderManagementsService : IOrderManagementsService
     public async Task<List<OrderModel.OrderResponse>> GetAllOrdersFilter(OrderModel.OrderFilterRequest request)
     {
         Expression<Func<Order, bool>> predicate = o => (!request.OrderStatus.HasValue || o.OrderStatus == request.OrderStatus.Value) &&
-        (!request.CustomerId.HasValue || o.customerId == request.CustomerId.Value);
+        (!request.CustomerId.HasValue || o.CustomerId == request.CustomerId.Value);
 
         var orders = await _repository.GetFiltered<Order>(predicate, "orderItems");
 
@@ -116,18 +115,18 @@ public class OrderManagementsService : IOrderManagementsService
         }
 
         return orders.Select(order => new OrderModel.OrderResponse(
-            order.customerId,
+            order.CustomerId,
             order.Id,
-            order.date,
-            order.shippingAddress,
-            order.billingAddress,
-            order.notes,
-            order.totalAmount,
-            order.orderItems.Select(oi => new OrderItemsModel.OrderItemResponse(
+            order.Date,
+            order.ShippingAddress,
+            order.BillingAddress,
+            order.Notes,
+            order.TotalAmount,
+            order.OrderItems.Select(oi => new OrderItemsModel.OrderItemResponse(
                 oi.ProductID,
                 oi.Product?.Name ?? string.Empty,
-                oi.quantity,
-                oi.unitPrice
+                oi.Quantity,
+                oi.UnitPrice
             )).ToList(),
             order.OrderStatus
         )).ToList();

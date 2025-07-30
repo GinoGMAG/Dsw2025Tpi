@@ -4,13 +4,13 @@ namespace Dsw2025Tpi.Domain.Domain
 {
     public class Order : EntityBase
     {
-        public Guid customerId { get; init; }
-        public DateTime date { get; init; } = DateTime.Now;
-        public string shippingAddress { get; set; }
-        public string billingAddress { get; set; }
-        public string? notes { get; set; }
-        public decimal totalAmount { get; set; }
-        public List<OrderItem> orderItems { get; set; } = new List<OrderItem>();
+        public Guid CustomerId { get; init; }
+        public DateTime Date { get; init; } = DateTime.Now;
+        public string ShippingAddress { get; set; }
+        public string BillingAddress { get; set; }
+        public string? Notes { get; set; }
+        public decimal TotalAmount { get; set; }
+        public List<OrderItem> OrderItems { get; set; } = new List<OrderItem>();
         public OrderStatus OrderStatus { get; set; } = OrderStatus.PENDING;
 
         // Navigation properties
@@ -18,9 +18,9 @@ namespace Dsw2025Tpi.Domain.Domain
 
         public Order(Guid customerId, string shippingAddress, string billingAddress)
         {
-            this.customerId = customerId;
-            this.shippingAddress = shippingAddress;
-            this.billingAddress = billingAddress;
+            this.CustomerId = customerId;
+            this.ShippingAddress = shippingAddress;
+            this.BillingAddress = billingAddress;
         }
 
     }
